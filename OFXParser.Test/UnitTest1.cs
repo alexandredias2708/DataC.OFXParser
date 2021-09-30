@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OFXParser.Core;
 using OFXParser.Entities;
@@ -11,7 +12,12 @@ namespace OFXParser.Test
         [TestMethod]
         public void TestMethod1()
         {
-            Extract extraxt = OFXParser.Parser.GenerateExtract("E:\\extract.ofx", new ParserSettings());
+            var filePath = @"C:\Users\thiag\Downloads\MEGA PACK 082021.OFX";
+            var file = File.OpenText(filePath);
+            Extract extraxt = OFXParser.Parser.GenerateExtract(file);
+
+
+//            Extract extraxt = OFXParser.Parser.GenerateExtract("E:\\extract.ofx", new ParserSettings());
         }
     }
 }
