@@ -43,7 +43,8 @@ namespace OFXParser
                     settings = new ParserSettings();
 
                 var sb = TranslateToXml(srFile);
-                XmlTextReader xmlTextReader = new XmlTextReader(srFile);
+                StreamReader reader = new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(sb.ToString())));
+                XmlTextReader xmlTextReader = new XmlTextReader(reader);
                 return GetExtractByXmlExported(xmlTextReader, settings);
             }
             catch (Exception E)
@@ -247,7 +248,7 @@ namespace OFXParser
                         result.Append(ReturnFinalTag(line));
                     }
                 }
-                srFile.Close();
+                //srFile.Close();
 
                 //---- Add xml identification line
                 result.Insert(0, @"<?xml version=""1.0""?>");

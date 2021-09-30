@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OFXParser", "OFXParser\OFXP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OFXParser.Test", "OFXParser.Test\OFXParser.Test.csproj", "{6B64A3A6-8EED-491D-9FA7-268B4BFCCF75}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OFXParser.Console", "OFXParser.Console\OFXParser.Console.csproj", "{8C8B9A26-2113-482D-9C14-738A3989242F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6B64A3A6-8EED-491D-9FA7-268B4BFCCF75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B64A3A6-8EED-491D-9FA7-268B4BFCCF75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B64A3A6-8EED-491D-9FA7-268B4BFCCF75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C8B9A26-2113-482D-9C14-738A3989242F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C8B9A26-2113-482D-9C14-738A3989242F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C8B9A26-2113-482D-9C14-738A3989242F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C8B9A26-2113-482D-9C14-738A3989242F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
