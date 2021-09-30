@@ -1,14 +1,12 @@
-# ofxparser.net
-Biblioteca desenvolvida em C# que traduz arquivos OFX e gera a instância de uma classe que representa o arquivo.
+# Data C OFXParser
 
-Exemplo de código:
+Biblioteca desenvolvida com base no projeto: https://github.com/leonardomelosantos/ofxparser.net
 
-Extract extratoBancario = OFXParser.Parser.GenerateExtract(caminhoDoArquivoOFX);
+Mantida por Data C (www.datac.com.br)
 
-if (extratoBancario != null)
-{
-	foreach (var transacao in extratoBancario.Transactions)
-	{
+Alterações significativas do projeto original:
 
-	}
-}
+- Mudança para .netcore 3.1
+- Permite que faça a extração sem ter o arquivo físico
+
+Dúvidas/sugestões podem ser enviadas para: thiago@datac.com.br
