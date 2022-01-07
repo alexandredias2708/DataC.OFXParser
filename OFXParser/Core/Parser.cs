@@ -43,9 +43,10 @@ namespace OFXParser
                     settings = new ParserSettings();
 
                 var sb = TranslateToXml(srFile);
-                StreamReader reader = new StreamReader(new MemoryStream(Encoding.ASCII.GetBytes(sb.ToString())));
-                XmlTextReader xmlTextReader = new XmlTextReader(reader);
-                return GetExtractByXmlExported(xmlTextReader, settings);
+                
+                StreamReader sReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString())));
+                XmlReader reader = XmlReader.Create(sReader);
+                return GetExtractByXmlExported(reader, settings);
             }
             catch (Exception E)
             {
@@ -59,7 +60,7 @@ namespace OFXParser
         /// <param name="xmlTextReader"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-		public static Extract GetExtractByXmlExported(XmlTextReader xmlTextReader, ParserSettings settings)
+		public static Extract GetExtractByXmlExported(XmlReader xmlTextReader, ParserSettings settings)
         {
             if (settings == null) settings = new ParserSettings();
 
@@ -156,7 +157,8 @@ namespace OFXParser
                                 if (transacaoAtual != null) transacaoAtual.Checksum = Convert.ToInt64(xmlTextReader.Value);
                                 break;
                             case "MEMO":
-                                if (transacaoAtual != null) transacaoAtual.Description = string.IsNullOrEmpty(xmlTextReader.Value) ? "" : xmlTextReader.Value.Trim().Replace("  ", " ");
+                                if (transacaoAtual != null)
+                                    transacaoAtual.Description = string.IsNullOrEmpty(xmlTextReader.Value) ? "" : xmlTextReader.Value.Trim().Replace("  ", " ");
                                 break;
                         }
                     }

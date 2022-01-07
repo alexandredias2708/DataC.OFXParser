@@ -1,6 +1,7 @@
 ﻿using OFXParser.Entities;
 using System;
 using System.IO;
+using System.Text;
 
 namespace OFXParser.ConsoleTeste
 {
@@ -9,13 +10,20 @@ namespace OFXParser.ConsoleTeste
         static void Main(string[] args)
         {
             //var filePath = @"C:\Users\thiag\Downloads\MEGA PACK 082021.OFX";
-            var filePath = @"C:\Users\thiag\Downloads\Sicoob mes 08.ofx";
+            var filePath = @"C:\Users\thiag\Downloads\teste.ofx";
             
             var file = File.OpenText(filePath);
+            var fi = new FileInfo(filePath);
+
+
+
+            //var reader = new StreamReader(fi.FullName, Encoding.GetEncoding("iso-8859-1"));
+            //fileText = reader.ReadToEnd();
+
             Extract extraxt = OFXParser.Parser.GenerateExtract(file);
 
             Console.WriteLine("Total: " + extraxt.Transactions?.Count);
-            Console.ReadLine();
+            Console.ReadKey();
         }
     }
 }
