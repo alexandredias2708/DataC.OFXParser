@@ -164,9 +164,9 @@ namespace OFXParser
                     }
                 }
             }
-            catch (XmlException xe)
+            catch (XmlException ex)
             {
-                throw new OFXParserException("Invalid OFX file!");
+                throw new OFXParserException("Invalid OFX file!", ex);
             }
             finally
             {
@@ -176,7 +176,7 @@ namespace OFXParser
             if ((settings.IsValidateHeader && temCabecalho == false) ||
                 (settings.IsValidateAccountData && temDadosConta == false))
             {
-                throw new OFXParserException("Invalid OFX file!");
+                throw new OFXParserException("Invalid OFX file!", new Exception("Cabeçalho e/ou rodapé inválido"));
             }
 
             return extrato;

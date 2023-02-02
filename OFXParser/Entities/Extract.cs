@@ -20,6 +20,11 @@ namespace OFXParser.Entities
 
         public IList<string> ImportingErrors { get; private set; }
 
+        public Extract()
+        {
+
+        }
+
         public Extract(HeaderExtract header, BankAccount bankAccount,
             String status, DateTime initialDate, DateTime finalDate)
         {
