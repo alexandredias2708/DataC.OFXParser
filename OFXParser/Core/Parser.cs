@@ -62,13 +62,15 @@ namespace OFXParser
         /// <returns></returns>
 		public static Extract GetExtractByXmlExported(XmlReader xmlTextReader, ParserSettings settings)
         {
+            var msgDados = "";
+            String elementoSendoLido = "";
+            Transaction transacaoAtual = null;
+
             try
             {
                 if (settings == null) settings = new ParserSettings();
 
                 // Variáveis úteis para o Parse
-                String elementoSendoLido = "";
-                Transaction transacaoAtual = null;
 
                 // Variávies utilizadas para a leitura do XML
                 HeaderExtract cabecalho = new HeaderExtract();
@@ -107,8 +109,18 @@ namespace OFXParser
                         }
                         if (xmlTextReader.NodeType == XmlNodeType.Text)
                         {
+                            try
+                            {
+                                var s = xmlTextReader.Value;
+                            }
+                            catch
+                            {
+                            }
+
                             switch (elementoSendoLido)
                             {
+
+
                                 case "DTSERVER":
                                     cabecalho.ServerDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
                                     temCabecalho = true;
@@ -153,7 +165,17 @@ namespace OFXParser
                                     if (transacaoAtual != null) transacaoAtual.TransactionValue = GetTransactionValue(xmlTextReader.Value, extrato, settings);
                                     break;
                                 case "FITID":
-                                    if (transacaoAtual != null) transacaoAtual.Id = xmlTextReader.Value;
+                                    if (transacaoAtual != null)
+                                    {
+                                        transacaoAtual.Id = xmlTextReader.Value;
+                                        //try
+                                        //{
+                                        //}
+                                        //catch
+                                        //{
+                                        //    transacaoAtual.Id = xmlTextReader.Value;
+                                        //}
+                                    }
                                     break;
                                 case "CHECKNUM":
                                     if (transacaoAtual != null) transacaoAtual.Checksum = Convert.ToInt64(xmlTextReader.Value);
@@ -185,7 +207,7 @@ namespace OFXParser
             }
             catch (Exception E)
             {
-                throw new Exception("GetExtractByXmlExported", E);
+                throw new Exception($"GetExtractByXmlExported: Elemento {elementoSendoLido}. Transaction: Id[{transacaoAtual?.Id}] Data[{transacaoAtual?.Date}] Description[{transacaoAtual?.Description}] TransactionValue[{transacaoAtual?.TransactionValue}]", E);
             }
         }
 
