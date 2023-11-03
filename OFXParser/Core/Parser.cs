@@ -43,7 +43,7 @@ namespace OFXParser
                     settings = new ParserSettings();
 
                 var sb = TranslateToXml(srFile);
-                
+
                 StreamReader sReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString())));
                 XmlReader reader = XmlReader.Create(sReader);
                 return GetExtractByXmlExported(reader, settings);
@@ -62,124 +62,131 @@ namespace OFXParser
         /// <returns></returns>
 		public static Extract GetExtractByXmlExported(XmlReader xmlTextReader, ParserSettings settings)
         {
-            if (settings == null) settings = new ParserSettings();
-
-            // Variáveis úteis para o Parse
-            String elementoSendoLido = "";
-            Transaction transacaoAtual = null;
-
-            // Variávies utilizadas para a leitura do XML
-            HeaderExtract cabecalho = new HeaderExtract();
-            BankAccount conta = new BankAccount();
-            Extract extrato = new Extract(cabecalho, conta, "");
-
-            Boolean temCabecalho = false;
-            Boolean temDadosConta = false;
             try
             {
-                while (xmlTextReader.Read())
-                {
-                    if (xmlTextReader.NodeType == XmlNodeType.EndElement)
-                    {
-                        switch (xmlTextReader.Name)
-                        {
-                            case "STMTTRN":
-                                if (transacaoAtual != null)
-                                {
-                                    extrato.AddTransaction(transacaoAtual);
-                                    transacaoAtual = null;
-                                }
-                                break;
-                        }
-                    }
-                    if (xmlTextReader.NodeType == XmlNodeType.Element)
-                    {
-                        elementoSendoLido = xmlTextReader.Name;
+                if (settings == null) settings = new ParserSettings();
 
-                        switch (elementoSendoLido)
-                        {
-                            case "STMTTRN":
-                                transacaoAtual = new Transaction();
-                                break;
-                        }
-                    }
-                    if (xmlTextReader.NodeType == XmlNodeType.Text)
+                // Variáveis úteis para o Parse
+                String elementoSendoLido = "";
+                Transaction transacaoAtual = null;
+
+                // Variávies utilizadas para a leitura do XML
+                HeaderExtract cabecalho = new HeaderExtract();
+                BankAccount conta = new BankAccount();
+                Extract extrato = new Extract(cabecalho, conta, "");
+
+                Boolean temCabecalho = false;
+                Boolean temDadosConta = false;
+                try
+                {
+                    while (xmlTextReader.Read())
                     {
-                        switch (elementoSendoLido)
+                        if (xmlTextReader.NodeType == XmlNodeType.EndElement)
                         {
-                            case "DTSERVER":
-                                cabecalho.ServerDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
-                                temCabecalho = true;
-                                break;
-                            case "LANGUAGE":
-                                cabecalho.Language = xmlTextReader.Value;
-                                temCabecalho = true;
-                                break;
-                            case "ORG":
-                                cabecalho.BankName = xmlTextReader.Value;
-                                temCabecalho = true;
-                                break;
-                            case "DTSTART":
-                                extrato.InitialDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
-                                break;
-                            case "DTEND":
-                                extrato.FinalDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
-                                break;
-                            case "BANKID":
-                                conta.Bank = new Bank(GetBankId(xmlTextReader.Value, extrato), "");
-                                temDadosConta = true;
-                                break;
-                            case "BRANCHID":
-                                conta.AgencyCode = xmlTextReader.Value;
-                                temDadosConta = true;
-                                break;
-                            case "ACCTID":
-                                conta.AccountCode = xmlTextReader.Value;
-                                temDadosConta = true;
-                                break;
-                            case "ACCTTYPE":
-                                conta.Type = xmlTextReader.Value;
-                                temDadosConta = true;
-                                break;
-                            case "TRNTYPE":
-                                if (transacaoAtual != null) transacaoAtual.Type = xmlTextReader.Value;
-                                break;
-                            case "DTPOSTED":
-                                if (transacaoAtual != null) transacaoAtual.Date = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
-                                break;
-                            case "TRNAMT":
-                                if (transacaoAtual != null) transacaoAtual.TransactionValue = GetTransactionValue(xmlTextReader.Value, extrato, settings);
-                                break;
-                            case "FITID":
-                                if (transacaoAtual != null) transacaoAtual.Id = xmlTextReader.Value;
-                                break;
-                            case "CHECKNUM":
-                                if (transacaoAtual != null) transacaoAtual.Checksum = Convert.ToInt64(xmlTextReader.Value);
-                                break;
-                            case "MEMO":
-                                if (transacaoAtual != null)
-                                    transacaoAtual.Description = string.IsNullOrEmpty(xmlTextReader.Value) ? "" : xmlTextReader.Value.Trim().Replace("  ", " ");
-                                break;
+                            switch (xmlTextReader.Name)
+                            {
+                                case "STMTTRN":
+                                    if (transacaoAtual != null)
+                                    {
+                                        extrato.AddTransaction(transacaoAtual);
+                                        transacaoAtual = null;
+                                    }
+                                    break;
+                            }
+                        }
+                        if (xmlTextReader.NodeType == XmlNodeType.Element)
+                        {
+                            elementoSendoLido = xmlTextReader.Name;
+
+                            switch (elementoSendoLido)
+                            {
+                                case "STMTTRN":
+                                    transacaoAtual = new Transaction();
+                                    break;
+                            }
+                        }
+                        if (xmlTextReader.NodeType == XmlNodeType.Text)
+                        {
+                            switch (elementoSendoLido)
+                            {
+                                case "DTSERVER":
+                                    cabecalho.ServerDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    temCabecalho = true;
+                                    break;
+                                case "LANGUAGE":
+                                    cabecalho.Language = xmlTextReader.Value;
+                                    temCabecalho = true;
+                                    break;
+                                case "ORG":
+                                    cabecalho.BankName = xmlTextReader.Value;
+                                    temCabecalho = true;
+                                    break;
+                                case "DTSTART":
+                                    extrato.InitialDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    break;
+                                case "DTEND":
+                                    extrato.FinalDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    break;
+                                case "BANKID":
+                                    conta.Bank = new Bank(GetBankId(xmlTextReader.Value, extrato), "");
+                                    temDadosConta = true;
+                                    break;
+                                case "BRANCHID":
+                                    conta.AgencyCode = xmlTextReader.Value;
+                                    temDadosConta = true;
+                                    break;
+                                case "ACCTID":
+                                    conta.AccountCode = xmlTextReader.Value;
+                                    temDadosConta = true;
+                                    break;
+                                case "ACCTTYPE":
+                                    conta.Type = xmlTextReader.Value;
+                                    temDadosConta = true;
+                                    break;
+                                case "TRNTYPE":
+                                    if (transacaoAtual != null) transacaoAtual.Type = xmlTextReader.Value;
+                                    break;
+                                case "DTPOSTED":
+                                    if (transacaoAtual != null) transacaoAtual.Date = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    break;
+                                case "TRNAMT":
+                                    if (transacaoAtual != null) transacaoAtual.TransactionValue = GetTransactionValue(xmlTextReader.Value, extrato, settings);
+                                    break;
+                                case "FITID":
+                                    if (transacaoAtual != null) transacaoAtual.Id = xmlTextReader.Value;
+                                    break;
+                                case "CHECKNUM":
+                                    if (transacaoAtual != null) transacaoAtual.Checksum = Convert.ToInt64(xmlTextReader.Value);
+                                    break;
+                                case "MEMO":
+                                    if (transacaoAtual != null)
+                                        transacaoAtual.Description = string.IsNullOrEmpty(xmlTextReader.Value) ? "" : xmlTextReader.Value.Trim().Replace("  ", " ");
+                                    break;
+                            }
                         }
                     }
                 }
-            }
-            catch (XmlException ex)
-            {
-                throw new OFXParserException("Invalid OFX file!", ex);
-            }
-            finally
-            {
-                xmlTextReader.Close();
-            }
+                catch (XmlException ex)
+                {
+                    throw new OFXParserException("Invalid OFX file!", ex);
+                }
+                finally
+                {
+                    xmlTextReader.Close();
+                }
 
-            if ((settings.IsValidateHeader && temCabecalho == false) ||
-                (settings.IsValidateAccountData && temDadosConta == false))
-            {
-                throw new OFXParserException("Invalid OFX file!", new Exception("Cabeçalho e/ou rodapé inválido"));
-            }
+                if ((settings.IsValidateHeader && temCabecalho == false) ||
+                    (settings.IsValidateAccountData && temDadosConta == false))
+                {
+                    throw new OFXParserException("Invalid OFX file!", new Exception("Cabeçalho e/ou rodapé inválido"));
+                }
 
-            return extrato;
+                return extrato;
+            }
+            catch (Exception E)
+            {
+                throw new Exception("GetExtractByXmlExported", E);
+            }
         }
 
         #region //----- Private methods
