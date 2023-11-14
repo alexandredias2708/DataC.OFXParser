@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml;
 using OFXParser.Core;
 using OFXParser.Entities;
+using System.Linq;
 
 namespace OFXParser
 {
@@ -44,7 +45,9 @@ namespace OFXParser
 
                 var sb = TranslateToXml(srFile);
 
-                StreamReader sReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(sb.ToString())));
+                var s = sb.ToString().Replace("&", "");
+
+                StreamReader sReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(s)));
                 XmlReader reader = XmlReader.Create(sReader);
                 return GetExtractByXmlExported(reader, settings);
             }
@@ -76,13 +79,23 @@ namespace OFXParser
                 HeaderExtract cabecalho = new HeaderExtract();
                 BankAccount conta = new BankAccount();
                 Extract extrato = new Extract(cabecalho, conta, "");
-
+                var linha = 0;
                 Boolean temCabecalho = false;
                 Boolean temDadosConta = false;
                 try
                 {
                     while (xmlTextReader.Read())
                     {
+                        try
+                        {
+                            var s = xmlTextReader.Value;
+                        }
+                        catch
+                        {
+                        }
+
+                        linha++;
+
                         if (xmlTextReader.NodeType == XmlNodeType.EndElement)
                         {
                             switch (xmlTextReader.Name)
@@ -109,14 +122,6 @@ namespace OFXParser
                         }
                         if (xmlTextReader.NodeType == XmlNodeType.Text)
                         {
-                            try
-                            {
-                                var s = xmlTextReader.Value;
-                            }
-                            catch
-                            {
-                            }
-
                             switch (elementoSendoLido)
                             {
 
@@ -156,7 +161,8 @@ namespace OFXParser
                                     temDadosConta = true;
                                     break;
                                 case "TRNTYPE":
-                                    if (transacaoAtual != null) transacaoAtual.Type = xmlTextReader.Value;
+                                    if (transacaoAtual != null)
+                                        transacaoAtual.Type = xmlTextReader.Value;
                                     break;
                                 case "DTPOSTED":
                                     if (transacaoAtual != null) transacaoAtual.Date = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
@@ -178,7 +184,8 @@ namespace OFXParser
                                     }
                                     break;
                                 case "CHECKNUM":
-                                    if (transacaoAtual != null) transacaoAtual.Checksum = Convert.ToInt64(xmlTextReader.Value);
+                                    if (transacaoAtual != null)
+                                        transacaoAtual.Checksum = Convert.ToInt64(new string(xmlTextReader.Value?.Trim().Where(x => char.IsDigit(x)).ToArray()) ?? "0");
                                     break;
                                 case "MEMO":
                                     if (transacaoAtual != null)
@@ -187,6 +194,8 @@ namespace OFXParser
                             }
                         }
                     }
+
+                    Console.WriteLine(linha);
                 }
                 catch (XmlException ex)
                 {
