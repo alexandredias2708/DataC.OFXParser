@@ -43,7 +43,10 @@ namespace OFXParser
                     settings = new ParserSettings();
 
                 var sb = TranslateToXml(srFile);
-                XmlTextReader xmlTextReader = new XmlTextReader(srFile);
+                var s = sb.ToString().Replace("&", "");
+
+                StreamReader sReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(s)));
+                XmlTextReader xmlTextReader = new XmlTextReader(sReader);
                 return GetExtractByXmlExported(xmlTextReader, settings);
             }
             catch (Exception E)
