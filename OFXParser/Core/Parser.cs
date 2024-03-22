@@ -372,6 +372,7 @@ namespace OFXParser
         /// <param name="newLine">Is it new line?</param>
         private static void AddTabs(StringBuilder stringObject, int lengthTabs, bool newLine)
         {
+            return;
             if (newLine)
             {
                 stringObject.AppendLine();
