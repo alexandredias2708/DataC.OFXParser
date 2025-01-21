@@ -127,7 +127,7 @@ namespace OFXParser
 
 
                                 case "DTSERVER":
-                                    cabecalho.ServerDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    cabecalho.ServerDate = ConvertOfxDateToDateTime_Old(xmlTextReader.Value, extrato);
                                     temCabecalho = true;
                                     break;
                                 case "LANGUAGE":
@@ -139,10 +139,10 @@ namespace OFXParser
                                     temCabecalho = true;
                                     break;
                                 case "DTSTART":
-                                    extrato.InitialDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    extrato.InitialDate = ConvertOfxDateToDateTime_Old(xmlTextReader.Value, extrato);
                                     break;
                                 case "DTEND":
-                                    extrato.FinalDate = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    extrato.FinalDate = ConvertOfxDateToDateTime_Old(xmlTextReader.Value, extrato);
                                     break;
                                 case "BANKID":
                                     conta.Bank = new Bank(GetBankId(xmlTextReader.Value, extrato), "");
@@ -165,15 +165,16 @@ namespace OFXParser
                                         transacaoAtual.Type = xmlTextReader.Value;
                                     break;
                                 case "DTPOSTED":
-                                    if (transacaoAtual != null) transacaoAtual.Date = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
+                                    if (transacaoAtual != null) 
+                                        transacaoAtual.Date = ConvertOfxDateToDateTime_Old(xmlTextReader.Value, extrato);
                                     break;
                                 case "TRNAMT":
                                     if (transacaoAtual != null) transacaoAtual.TransactionValue = GetTransactionValue(xmlTextReader.Value, extrato, settings);
                                     break;
                                 case "FITID":
-                                    if (transacaoAtual != null)
+                                    if (transacaoAtual != null && transacaoAtual.Date == default)
                                     {
-                                        transacaoAtual.Id = xmlTextReader.Value;
+                                        transacaoAtual.Date = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
                                         //try
                                         //{
                                         //}
@@ -182,6 +183,9 @@ namespace OFXParser
                                         //    transacaoAtual.Id = xmlTextReader.Value;
                                         //}
                                     }
+                                    else
+                                        transacaoAtual.Id = xmlTextReader.Value;
+
                                     break;
                                 case "CHECKNUM":
                                     if (transacaoAtual != null)
@@ -372,7 +376,6 @@ namespace OFXParser
         /// <param name="newLine">Is it new line?</param>
         private static void AddTabs(StringBuilder stringObject, int lengthTabs, bool newLine)
         {
-            return;
             if (newLine)
             {
                 stringObject.AppendLine();
@@ -446,13 +449,25 @@ namespace OFXParser
             return result;
         }
 
+        private static DateTime ConvertOfxDateToDateTime(string ofxDate, Extract extract)
+        {
+            if(string.IsNullOrEmpty(ofxDate))
+                return DateTime.MinValue;
+
+            if(ofxDate.Length > 8)
+                ofxDate = ofxDate[..8];
+
+            return DateTime.ParseExact(ofxDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
         /// <summary>
         /// Method that convert a OFX date string to DateTime object.
         /// </summary>
         /// <param name="ofxDate"></param>
         /// <param name="extract"></param>
         /// <returns></returns>
-        private static DateTime ConvertOfxDateToDateTime(String ofxDate, Extract extract)
+        [Obsolete]
+        private static DateTime ConvertOfxDateToDateTime_Old(String ofxDate, Extract extract)
         {
             DateTime dateTimeReturned = DateTime.MinValue;
             try
