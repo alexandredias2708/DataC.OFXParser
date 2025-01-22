@@ -194,7 +194,7 @@ namespace OFXParser
                                         if (!string.IsNullOrEmpty(checkNumValue))
                                             transacaoAtual.Checksum = Convert.ToInt64(new string(checkNumValue.Where(char.IsDigit).ToArray()));
                                         else
-                                            transacaoAtual.Checksum = Convert.ToInt64(new string(xmlTextReader.Value?.Trim().Where(x => char.IsDigit(x)).ToArray()) ?? "0");
+                                            transacaoAtual.Checksum = 0;
                                     }
                                     break;
                                 case "MEMO":
