@@ -165,7 +165,7 @@ namespace OFXParser
                                         transacaoAtual.Type = xmlTextReader.Value;
                                     break;
                                 case "DTPOSTED":
-                                    if (transacaoAtual != null) 
+                                    if (transacaoAtual != null)
                                         transacaoAtual.Date = ConvertOfxDateToDateTime_Old(xmlTextReader.Value, extrato);
                                     break;
                                 case "TRNAMT":
@@ -189,7 +189,13 @@ namespace OFXParser
                                     break;
                                 case "CHECKNUM":
                                     if (transacaoAtual != null)
-                                        transacaoAtual.Checksum = Convert.ToInt64(new string(xmlTextReader.Value?.Trim().Where(x => char.IsDigit(x)).ToArray()) ?? "0");
+                                    {
+                                        var checkNumValue = xmlTextReader.Value?.Trim();
+                                        if (!string.IsNullOrEmpty(checkNumValue))
+                                            transacaoAtual.Checksum = Convert.ToInt64(new string(checkNumValue.Where(char.IsDigit).ToArray()));
+                                        else
+                                            transacaoAtual.Checksum = Convert.ToInt64(new string(xmlTextReader.Value?.Trim().Where(x => char.IsDigit(x)).ToArray()) ?? "0");
+                                    }
                                     break;
                                 case "MEMO":
                                     if (transacaoAtual != null)
@@ -451,10 +457,10 @@ namespace OFXParser
 
         private static DateTime ConvertOfxDateToDateTime(string ofxDate, Extract extract)
         {
-            if(string.IsNullOrEmpty(ofxDate))
+            if (string.IsNullOrEmpty(ofxDate))
                 return DateTime.MinValue;
 
-            if(ofxDate.Length > 8)
+            if (ofxDate.Length > 8)
                 ofxDate = ofxDate[..8];
 
             return DateTime.ParseExact(ofxDate, "yyyyMMdd", System.Globalization.CultureInfo.InvariantCulture);
