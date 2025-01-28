@@ -46,6 +46,7 @@ namespace OFXParser
                 var sb = TranslateToXml(srFile);
 
                 var s = sb.ToString().Replace("&", "");
+                s = sb.ToString().Replace("\t\t", "");
 
                 StreamReader sReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(s)));
                 XmlReader reader = XmlReader.Create(sReader);
@@ -90,8 +91,9 @@ namespace OFXParser
                         {
                             var s = xmlTextReader.Value;
                         }
-                        catch
+                        catch(Exception E) 
                         {
+                            Console.WriteLine(E.Message);
                         }
 
                         linha++;
@@ -174,17 +176,10 @@ namespace OFXParser
                                 case "FITID":
                                     if (transacaoAtual != null && transacaoAtual.Date == default)
                                     {
-                                        transacaoAtual.Date = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);
-                                        //try
-                                        //{
-                                        //}
-                                        //catch
-                                        //{
-                                        //    transacaoAtual.Id = xmlTextReader.Value;
-                                        //}
+                                        transacaoAtual.Date = ConvertOfxDateToDateTime(xmlTextReader.Value, extrato);                                        
                                     }
                                     else
-                                        transacaoAtual.Id = xmlTextReader.Value;
+                                        transacaoAtual.Id = xmlTextReader.Value; 
 
                                     break;
                                 case "CHECKNUM":
@@ -203,7 +198,7 @@ namespace OFXParser
                                     break;
                             }
                         }
-                    }
+                    }                    
 
                     Console.WriteLine(linha);
                 }
