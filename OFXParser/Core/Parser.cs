@@ -45,8 +45,7 @@ namespace OFXParser
 
                 var sb = TranslateToXml(srFile);
 
-                var s = sb.ToString().Replace("&", "");
-                s = sb.ToString().Replace("\t\t", "");
+                var s = sb.ToString().Replace("&", "&amp;").Replace("\t\t", "");                
 
                 StreamReader sReader = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(s)));
                 XmlReader reader = XmlReader.Create(sReader);
@@ -196,6 +195,9 @@ namespace OFXParser
                                     if (transacaoAtual != null)
                                         transacaoAtual.Description = string.IsNullOrEmpty(xmlTextReader.Value) ? "" : xmlTextReader.Value.Trim().Replace("  ", " ");
                                     break;
+                                
+                                case "NAME":
+                                    break;                                    
                             }
                         }
                     }                    

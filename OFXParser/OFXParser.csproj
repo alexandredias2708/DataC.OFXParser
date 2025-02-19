@@ -11,7 +11,7 @@
     <RepositoryUrl>https://github.com/datacsistemas/DataC.OFXParser</RepositoryUrl>
     <PackageTags>ofx bank banco extrato extract</PackageTags>
     <Copyright />
-    <Version>8.0.0.4</Version>
+    <Version>8.0.0.5</Version>
   </PropertyGroup>
 
 </Project>
